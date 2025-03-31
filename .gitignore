@@ -9,15 +9,19 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+bin/
 develop-eggs/
 dist/
 downloads/
+eegvizlib*/
 eggs/
 .eggs/
+include/
 lib/
 lib64/
 parts/
 sdist/
+share/
 var/
 wheels/
 share/python-wheels/
@@ -169,6 +173,9 @@ cython_debug/
 
 # Ruff stuff:
 .ruff_cache/
+
+# VSCode stuff:
+.vscode/
 
 # PyPI configuration file
 .pypirc
