@@ -1,5 +1,7 @@
 # GirderEEGViewer
 
+Works only on Linux/Mac, not on Windows.
+
 ## Create environment and install dependencies
 ```
 python -m venv env
@@ -17,6 +19,11 @@ mkdir {PACKAGES_PATH}/eegviz
 make
 make install
 ```
+
+You may have to install SDL before calling "configure":
+```
+sudo apt install libsdl2-dev libsdl2-ttf-dev
+``` 
 
 ### Contributing
 Install development dependencies
