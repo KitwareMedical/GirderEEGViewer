@@ -1,5 +1,7 @@
 # GirderEEGViewer
 
+![GirderEEGViewer](https://github.com/user-attachments/assets/37796cb5-840f-4feb-885c-87b1ff2963ea)
+
 Works only on Linux/Mac, not on Windows.
 
 ## Create environment and install dependencies
