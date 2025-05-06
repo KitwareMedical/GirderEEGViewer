@@ -1,5 +1,7 @@
 # GirderEEGViewer
 
+![GirderEEGViewer](https://github.com/user-attachments/assets/37796cb5-840f-4feb-885c-87b1ff2963ea)
+
 Works only on Linux/Mac, not on Windows.
 
 ## Create environment and install dependencies
@@ -64,3 +66,7 @@ girdereegviewer file.neonatal
 ```
 To test the application, you can try to use the [_example.neonatal_](https://github.com/KitwareMedical/GirderEEGViewer/releases/download/untagged-ad480b7a640cc0981ff5/example.neonatal) file provided in the assets.
 You can add ```--server``` to your command line to prevent your browser from opening and ```--port``` to specifiy the port the server should listen to, default is 8080.
+
+## Acknowledgement
+
+This work was supported by the Agence Nationale de la Recherche (Grant ANR-22-CE45-0034).
