@@ -1,9 +1,10 @@
-from .eeg.components import EEGWindow
+from trame.app import get_server
 from trame.app.testing import enable_testing
 from trame.decorators import TrameApp
-from trame.app import get_server
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify as v, rca, client
+from trame.widgets import vuetify as v, rca
+
+from .eeg.components import EEGWindow
 
 @TrameApp()
 class EEGApp:
@@ -26,7 +27,6 @@ class EEGApp:
 
     def _build_ui(self):
         with SinglePageLayout(self.server, full_height=True) as layout:
-            client.Style("div { position: unset !important };") # Make the RCA fit the image
             layout.title.set_text("EEG Viewer")
 
             with layout.content:
@@ -38,8 +38,6 @@ class EEGApp:
                         name="eeg-view",
                         display="image",
                         send_mouse_move=True,
-                        image_style=({},),
-                        style="width: auto; height: auto;" # Make the RCA fit the image
                     )
 
                     self.view_handler = view.create_view_handler(
