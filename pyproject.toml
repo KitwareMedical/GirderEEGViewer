@@ -6,6 +6,7 @@ authors = [
     {name = "Kitware Europe"},
 ]
 dependencies = [
+    "eegvizlib",
     "girder-client",
     "trame>=3.8.0",
     "trame-gwc",
