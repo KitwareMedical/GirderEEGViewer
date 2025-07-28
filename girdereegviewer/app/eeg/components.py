@@ -14,24 +14,26 @@ class EEGWindow(AbstractWindow):
         self._context = libeegviz.create(data_path)
         self._events = ["MouseMove", "LeftButtonPress", "RightButtonPress", "KeyDown"]
         self._keys = [
+            " ",
             "a",
-            "z",
-            "i",
-            "ArrowRight",
-            "ArrowLeft",
-            "u",
-            "d",
             "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
             "ArrowUp",
-            "k",
-            "v",
-            "q",
-            "Tab",
+            "c",
+            "d",
             "Enter",
+            "Escape",
+            "i",
+            "k",
             "n",
             "p",
-            "Escape",
-            " ",
+            "q",
+            "r",
+            "Tab",
+            "u",
+            "v",
+            "z",
         ]
 
     def _move(self, x, y):
@@ -76,7 +78,7 @@ class EEGWindow(AbstractWindow):
 
         if event_type == "MouseMove":
             if 0 < event["x"] <= cols and 0 < event["y"] <= rows:
-                self._move(int(event["x"]), int(event["y"]))
+                self._move(int(event["x"]), rows - int(event["y"]))
         elif event_type == "LeftButtonPress":
             if 0 < event["x"] <= cols and 0 < event["y"] <= rows:
                 self._click(0)
