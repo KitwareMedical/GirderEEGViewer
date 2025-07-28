@@ -13,28 +13,7 @@ class EEGWindow(AbstractWindow):
             raise Exception("Path does not exist")
         self._context = libeegviz.create(data_path)
         self._events = ["MouseMove", "LeftButtonPress", "RightButtonPress", "KeyDown"]
-        self._keys = [
-            " ",
-            "a",
-            "ArrowDown",
-            "ArrowLeft",
-            "ArrowRight",
-            "ArrowUp",
-            "c",
-            "d",
-            "Enter",
-            "Escape",
-            "i",
-            "k",
-            "n",
-            "p",
-            "q",
-            "r",
-            "Tab",
-            "u",
-            "v",
-            "z",
-        ]
+        self._cols, self._rows = 0, 0
 
     def _move(self, x, y):
         libeegviz.move(self._context, x, y)
@@ -44,6 +23,9 @@ class EEGWindow(AbstractWindow):
 
     def _keydown(self, key):
         libeegviz.key(self._context, key)
+
+    def _is_point_in_window(self, x, y):
+        return 0 <= x <= self._cols and 0 <= y <= self._rows
 
     def rgba_to_rgb(self, rgba_image_array):
         """Convert an RGBA image array to an RGB image array by alpha blending over a white background."""
@@ -56,39 +38,35 @@ class EEGWindow(AbstractWindow):
 
     @property
     def img_cols_rows(self):
-        byte_image, cols, rows, _ = libeegviz.update(self._context)
-        image = Image.frombytes(mode="RGBA", size=(cols, rows), data=byte_image)
+        byte_image, self._cols, self._rows, _ = libeegviz.update(self._context)
+        image = Image.frombytes(mode="RGBA", size=(self._cols, self._rows), data=byte_image)
         np_image = np.asarray(image)
         np_image = self.rgba_to_rgb(np_image)
         return (
             np_image,
-            cols,
-            rows,
+            self._cols,
+            self._rows,
         )
 
     def process_resize_event(self, width, height):
         libeegviz.resize(self._context, width, height)
 
     def process_interaction_event(self, event):
-        _, cols, rows, _ = libeegviz.update(self._context)
         event_type = event["type"]
 
         if event_type not in self._events:
             return False
 
+        if not self._is_point_in_window(event.get("x", 0), event.get("y", 0)):
+            return False
+
         if event_type == "MouseMove":
-            if 0 < event["x"] <= cols and 0 < event["y"] <= rows:
-                self._move(int(event["x"]), rows - int(event["y"]))
+            self._move(int(event["x"]), self._rows - int(event["y"]))
         elif event_type == "LeftButtonPress":
-            if 0 < event["x"] <= cols and 0 < event["y"] <= rows:
-                self._click(0)
+            self._click(0)
         elif event_type == "RightButtonPress":
-            if 0 < event["x"] <= cols and 0 < event["y"] <= rows:
-                self._click(1)
+            self._click(1)
         elif event_type == "KeyDown":
-            key = event.get("key", "")
-            if key in self._keys:
-                self._keydown(key)
-            else:
-                return False
+            self._keydown(event.get("key", ""))
+
         return True
