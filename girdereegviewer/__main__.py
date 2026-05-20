@@ -1,4 +1,4 @@
-from .core import ViewerApp
+from girdereegviewer.core import ViewerApp
 
 
 def main(**kwargs) -> None:

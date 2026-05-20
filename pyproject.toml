@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "eegvizlib",
     "girder-client",
+    "py-undo-stack",
     "trame>=3.8.0",
     "trame-gwc",
     "trame-server",

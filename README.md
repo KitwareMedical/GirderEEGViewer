@@ -56,7 +56,7 @@ pip install ".[turbo]"
 ## Run trame application
 
 ```
-girdereegviewer file.neonatal
+girdereegviewer
 ```
 
 To test the application, you can try to use the

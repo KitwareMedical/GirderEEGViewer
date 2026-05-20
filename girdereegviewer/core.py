@@ -5,6 +5,7 @@ from trame.widgets import vuetify3 as v3
 from trame_server.core import Server
 
 from .eeg import EEGViewerLogic, EEGViewerUI
+from .file_browser import FileBrowserLogic, FileBrowserUI
 
 
 class ViewerLayout(VAppLayout):
@@ -27,10 +28,11 @@ class ViewerLayout(VAppLayout):
 class ViewerApp(TrameApp):
     def __init__(self):
         super().__init__()
-        self.server.cli.add_argument("path")  # Will not be used once girder/filebrowser is set up
-        args, _ = self.server.cli.parse_known_args()
 
-        self._eeg_viewer_logic = EEGViewerLogic(args.path)  # Will not be used once girder/filebrowser is set up
+        self._file_browser_logic = FileBrowserLogic(self.server)
+        self._eeg_viewer_logic = EEGViewerLogic(self.server)
+
+        self._file_browser_logic.files_selected.connect(self._eeg_viewer_logic.set_file_path)
         self.layout = ViewerLayout(self.server)
         self._build_ui()
 
@@ -38,8 +40,12 @@ class ViewerApp(TrameApp):
 
     def _build_ui(self) -> None:
         with self.layout:
-            client.Style("html { overflow-y: hidden; } ")
+            client.Style(
+                "html { overflow-y: hidden; } "
+                ".v-input .v-input__prepend .v-icon { color: rgb(var(--v-theme-on-surface)); opacity: 1; }"
+            )
             with self.layout.app_bar:
+                self._file_browser_ui = FileBrowserUI()
                 v3.VAppBarTitle(self.state.trame__title, style="flex: 0 1 auto;")
 
             with self.layout.app_viewer:
@@ -47,3 +53,4 @@ class ViewerApp(TrameApp):
 
     def set_ui(self) -> None:
         self._eeg_viewer_logic.set_ui(self._eeg_viewer_ui)
+        self._file_browser_logic.set_ui(self._file_browser_ui)
