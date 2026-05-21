@@ -32,7 +32,7 @@ class ViewerApp(TrameApp):
         self._file_browser_logic = FileBrowserLogic(self.server)
         self._eeg_viewer_logic = EEGViewerLogic(self.server)
 
-        self._file_browser_logic.files_selected.connect(self._eeg_viewer_logic.set_file_path)
+        self._file_browser_logic.eeg_files_selected.connect(self._eeg_viewer_logic.set_file_path)
         self.layout = ViewerLayout(self.server)
         self._build_ui()
 
