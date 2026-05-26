@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from trame.widgets import html
@@ -19,6 +19,7 @@ class FileBrowserState:
     display_button_tooltip: bool = False
     eeg_file: File | None = None
     eeg_annotation_file: File | None = None
+    slicer_files: list[File] = field(default_factory=list)
 
 
 class FileBrowserUI(html.Div):

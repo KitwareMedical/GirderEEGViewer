@@ -9,13 +9,15 @@ from undo_stack import Signal
 from .file_browser_ui import File, FileBrowserState, FileBrowserUI
 
 ANNOTATION_FILE_SUFFIX = "annotations.csv"
+EEG_FILE_EXTENSIONS = (".neonatal", ".edf")
+SLICER_FILE_EXTENSIONS = (".dcm",)
 
 
 class FileValidationError(Exception):
     pass
 
 
-class EEGLoadingError(Exception):
+class ViewerLoadingError(Exception):
     pass
 
 
@@ -23,8 +25,17 @@ def are_files_valid(files: list[dict[str, Any]]) -> bool:
     return all(isinstance(file.get("name"), str) and isinstance(file.get("content"), bytes) for file in files)
 
 
+def are_eeg_files(files: list[dict[str, Any]]) -> bool:
+    return len(files) <= 2 and any(file["name"].endswith(EEG_FILE_EXTENSIONS) for file in files)
+
+
+def are_slicer_files(files: list[dict[str, Any]]) -> bool:
+    return all(file["name"].endswith(SLICER_FILE_EXTENSIONS) for file in files)
+
+
 class FileBrowserLogic:
     eeg_files_selected = Signal(str)
+    slicer_files_selected = Signal(str)
 
     def __init__(self, server: Server):
         self.server = server
@@ -68,25 +79,14 @@ class FileBrowserLogic:
 
         return str(file_path)
 
-    def _validate_eeg_files(self, eeg_files: list[dict[str, Any]]) -> None:
-        if not eeg_files:
-            raise FileValidationError("No files selected")
-
-        if len(eeg_files) > 2:
-            raise FileValidationError("Too many files selected")
-
-        if not are_files_valid(eeg_files):
-            raise FileValidationError("Invalid file format")
-
+    def _format_eeg_files(self, eeg_files: list[dict[str, Any]]) -> None:
         eeg_files.sort(key=lambda d: d["name"])
-
         self.data.eeg_file = File(
             name=eeg_files[0]["name"],
             content=eeg_files[0]["content"],
         )
 
         annotation_file_name = f"{self.data.eeg_file.name}.{ANNOTATION_FILE_SUFFIX}"
-
         has_annotation_file = len(eeg_files) == 2 and eeg_files[1]["name"] == annotation_file_name
 
         self.data.eeg_annotation_file = File(
@@ -94,9 +94,18 @@ class FileBrowserLogic:
             content=eeg_files[1]["content"] if has_annotation_file else None,
         )
 
+    def _format_slicer_files(self, slicer_files: list[dict[str, Any]]) -> None:
+        self.data.slicer_files = [
+            File(
+                name=file["name"],
+                content=file["content"],
+            )
+            for file in slicer_files
+        ]
+
     def _load_eeg_files(self) -> None:
         if self.data.eeg_file is None:
-            raise EEGLoadingError("EEG file is missing")
+            raise ViewerLoadingError("EEG file is missing")
 
         self._create_tmp_dir()
 
@@ -108,7 +117,20 @@ class FileBrowserLogic:
         try:
             self.eeg_files_selected(eeg_file_path)
         except Exception as e:
-            raise EEGLoadingError("Could not load data into EEG Viewer") from e
+            raise ViewerLoadingError("Could not load data into EEG Viewer") from e
+
+    def _load_slicer_files(self) -> None:
+        if len(self.data.slicer_files) == 0:
+            raise ViewerLoadingError("Slicer file is missing")
+
+        self._create_tmp_dir()
+
+        slicer_file_paths = [self._write_file_to_tmp_dir(file) for file in self.data.slicer_files]
+
+        try:
+            self.slicer_files_selected(slicer_file_paths)
+        except Exception as e:
+            raise ViewerLoadingError("Could not load data into Slicer Viewer") from e
 
     def _reset_state(self) -> None:
         self.data.eeg_file = None
@@ -116,14 +138,27 @@ class FileBrowserLogic:
 
     def _load_files(self, selected_files: list[dict[str, Any]]) -> None:
         try:
-            self._validate_eeg_files(selected_files)
-            self._load_eeg_files()
+            if len(selected_files) == 0:
+                raise FileValidationError("No file selected")
+
+            if not are_files_valid(selected_files):
+                raise FileValidationError("Invalid file format")
+
+            if are_eeg_files(selected_files):
+                self._format_eeg_files(selected_files)
+                self._load_eeg_files()
+
+            elif are_slicer_files(selected_files):
+                self._format_slicer_files(selected_files)
+                self._load_slicer_files()
+            else:
+                FileValidationError("Invalid file extension")
 
         except FileValidationError:
             self._reset_state()
             raise
 
-        except EEGLoadingError:
+        except ViewerLoadingError:
             self._reset_state()
             raise
 

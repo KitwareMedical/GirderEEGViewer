@@ -13,7 +13,7 @@ class EEGViewerLogic:
         self.eeg_window = EEGViewerWindow()
 
     def set_ui(self, ui: EEGViewerUI) -> None:
-        self.view_handler = ui.create_view_handler(self.eeg_window)
+        self.view_handler = ui.rca.create_view_handler(self.eeg_window)
 
     def set_file_path(self, file_path: str) -> None:
         self.eeg_window.set_file_path(file_path)
