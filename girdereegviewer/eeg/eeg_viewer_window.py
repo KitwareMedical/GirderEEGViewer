@@ -8,20 +8,30 @@ from trame_rca.utils import AbstractWindow
 
 
 class EEGViewerWindow(AbstractWindow):
-    def __init__(self, data_path: str):
-        if not Path(data_path).exists():
-            raise Exception("Path does not exist")
-        self._context = libeegviz.create(data_path)
+    def __init__(self):
+        self._context = None
         self._events = ["MouseMove", "LeftButtonPress", "RightButtonPress", "KeyDown"]
         self._cols, self._rows = 0, 0
+        self.window_size = {"w": 0, "h": 0}
+
+    def set_file_path(self, file_path: str) -> None:
+        if not Path(file_path).exists():
+            raise Exception("Path does not exist")
+        self._context = libeegviz.create(file_path)
 
     def _move(self, x: float, y: float) -> None:
+        if self._context is None:
+            return
         libeegviz.move(self._context, x, y)
 
     def _click(self, button: str) -> None:
+        if self._context is None:
+            return
         libeegviz.click(self._context, button)
 
     def _keydown(self, key: str) -> None:
+        if self._context is None:
+            return
         libeegviz.key(self._context, key)
 
     def _is_point_in_window(self, x: float, y: float) -> None:
@@ -37,7 +47,9 @@ class EEGViewerWindow(AbstractWindow):
         return (out_rgb * 255).astype(np.uint8)
 
     @property
-    def img_cols_rows(self) -> None:
+    def img_cols_rows(self) -> tuple[Any, int, int]:
+        if self._context is None:
+            return (None, 0, 0)
         byte_image, self._cols, self._rows, _ = libeegviz.update(self._context)
         image = Image.frombytes(mode="RGBA", size=(self._cols, self._rows), data=byte_image)
         np_image = np.asarray(image)
@@ -49,6 +61,9 @@ class EEGViewerWindow(AbstractWindow):
         )
 
     def process_resize_event(self, width: int, height: int) -> None:
+        self.window_size = {"w": width, "h": height}
+        if self._context is None:
+            return
         libeegviz.resize(self._context, width, height)
 
     def process_interaction_event(self, event: Any) -> None:
