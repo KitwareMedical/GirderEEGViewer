@@ -9,11 +9,14 @@ dependencies = [
     "eegvizlib",
     "girder-client",
     "py-undo-stack",
-    "trame>=3.8.0",
+    "slicer-core>=5.11.0",
+    "slicer-layer-dm>=1.2.0",
     "trame-gwc",
-    "trame-server",
-    "trame-vuetify",
     "trame-rca>=2.1",
+    "trame-server",
+    "trame-slicer>=1.11.0",
+    "trame-vuetify",
+    "trame>=3.8.0"
 ]
 requires-python = ">=3.10, <3.13"
 readme = "README.rst"
