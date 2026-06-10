@@ -9,7 +9,6 @@
 - **shortcuts**: Add an info dialog with keyboard shortcuts
   ([`8571ceb`](https://github.com/KitwareMedical/GirderEEGViewer/commit/8571ceb304bce7845133444e64d87aaace3784dd))
 
-
 ## v1.1.0 (2026-05-29)
 
 ### Features

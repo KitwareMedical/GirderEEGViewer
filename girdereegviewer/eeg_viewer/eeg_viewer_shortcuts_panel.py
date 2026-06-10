@@ -41,7 +41,9 @@ class ShortcutInfo(Div):
 class ShortcutsPanel(Div):
     def __init__(self, **kwargs) -> None:
         super().__init__(
-            classes="d-flex justify-end ma-7", style="inset: 0; position: absolute; pointer-events: none;", **kwargs
+            classes="d-flex justify-end align-end ma-7",
+            style="inset: 0; position: absolute; pointer-events: none;",
+            **kwargs,
         )
 
         self._build_ui()
@@ -56,7 +58,6 @@ class ShortcutsPanel(Div):
                     raw_attrs=['tabindex="-1"'],
                     color="white",
                     style="pointer-events: visible;",
-                    size="small",
                 ),
             ):
                 v3.VTooltip(
