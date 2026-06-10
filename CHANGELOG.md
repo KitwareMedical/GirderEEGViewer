@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.1 (2026-06-10)
+
+### Bug Fixes
+
+- Move shortcuts button to bottom right corner
+  ([`55122db`](https://github.com/KitwareMedical/GirderEEGViewer/commit/55122db0075d21995ffddaabbbb275e08765bd7f))
+
+
 ## v1.2.0 (2026-05-29)
 
 ### Features
