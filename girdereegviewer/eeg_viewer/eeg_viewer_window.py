@@ -4,10 +4,9 @@ from typing import Any
 import libeegviz
 import numpy as np
 from PIL import Image
-from trame_rca.utils import AbstractWindow
 
 
-class EEGViewerWindow(AbstractWindow):
+class EEGViewerWindow:
     def __init__(self):
         self._context = None
         self._events = ["MouseMove", "LeftButtonPress", "RightButtonPress", "KeyDown"]
