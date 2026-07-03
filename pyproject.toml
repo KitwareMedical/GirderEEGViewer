@@ -12,7 +12,7 @@ dependencies = [
     "slicer-core>=5.11.0",
     "slicer-layer-dm>=1.2.0",
     "trame-gwc",
-    "trame-rca>=2.1",
+    "trame-rca==2.5.2",
     "trame-server",
     "trame-slicer>=1.11.0",
     "trame-vuetify",
