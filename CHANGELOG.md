@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.2 (2026-07-03)
+
+### Bug Fixes
+
+- **rca**: Adapt trame-rca dependency version
+  ([`aba0514`](https://github.com/KitwareMedical/GirderEEGViewer/commit/aba0514edde23f985e4502658f60f7ebdb9a30b5))
+
+
 ## v1.2.1 (2026-06-10)
 
 ### Bug Fixes
